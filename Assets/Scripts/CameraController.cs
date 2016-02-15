@@ -8,16 +8,24 @@ public class CameraController : MonoBehaviour
 	public float minZoomFOV = 2;
 	public float maxZoomFOV = 90;
 
-	public float dragSpeed = 0.75f;
+	public float dragSpeed = 0.25f;
+
+	public static CameraController camController;
+
 	private Vector3 dragOrigin;
 
 	private Camera thisCamera;
 	public Vector3 offSet;
 
-	void Start()
+	void Awake()
 	{
-		thisCamera = this.GetComponent<Camera>();	
+		thisCamera = this.GetComponent<Camera>();
+		if (camController == null)
+		{
+			camController = this;
+		}
 	}
+
 
 	void LateUpdate()
 	{
@@ -33,19 +41,21 @@ public class CameraController : MonoBehaviour
 		}
 
 
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButtonDown(1))
 		{
 			dragOrigin = Input.mousePosition;
 			return;
 		}
 
-		if (!Input.GetMouseButton(0)) return;
-
+		if (!Input.GetMouseButton(1)) return;
+		{
 		Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
-		Vector3 move = new Vector3(pos.x , 0, pos.y);
 
-		transform.Translate(move, Space.World); 
+		Vector3 move = new Vector3(pos.x * dragSpeed , 0, pos.y * dragSpeed);
 
+
+			transform.Translate (move, Space.World);
+		}
 
 
 
@@ -67,6 +77,11 @@ public class CameraController : MonoBehaviour
 		{
 			thisCamera.fieldOfView = maxZoomFOV;
 		}
+	}
+
+	public void CentreOn(Vector3 point)
+	{
+		this.transform.position = point + offSet;
 	}
 
 }
