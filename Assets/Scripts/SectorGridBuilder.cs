@@ -67,34 +67,34 @@ public class SectorGridBuilder : GLMonoBehaviour
 
 	}
 	
-	    public void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-			var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-			RaycastHit hit;
-
-			if (Physics.Raycast (ray, out hit))
-			{
-				Vector3 worldPosition = this.transform.InverseTransformPoint (hit.point);
-
-
-				var point = map [worldPosition]; 
- 
-				if (grid.Contains (point))
-				{
-                
-					grid [point].Color = Color.red;
-					CameraController.camController.CentreOn (map [point]);
-
-		
-
-
-				}
-			}
-        }
-    }
+//	public void Update()
+//	{
+//		if (Input.GetMouseButtonDown(0))
+//		{
+//			var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+//
+//			RaycastHit hit;
+//
+//			if (Physics.Raycast (ray, out hit))
+//			{
+//				Vector3 worldPosition = this.transform.InverseTransformPoint (hit.point);
+//
+//
+//				var point = map [worldPosition]; 
+//
+//				if (grid.Contains (point))
+//				{
+//
+//					grid [point].Color = Color.red;
+//					CameraController.camController.CentreOn (map [point]);
+//
+//
+//
+//
+//				}
+//			}
+//		}
+//	}
 
 
 }
