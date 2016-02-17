@@ -12,7 +12,7 @@ public class BattleManager : GridBehaviour<FlatHexPoint>
 //	public Fleet EnemyFleet;
 //
 
-
+	public GameObject unitPrefab;
 
 	public bool somethingSelected;
 	public Unit unitSelected;
@@ -22,7 +22,7 @@ public class BattleManager : GridBehaviour<FlatHexPoint>
 	private Dictionary<FlatHexPoint, float> AvailableMoves;
 	private FlatHexPoint selectedTarget;
 
-	private IGrid<SectorCell, FlatHexPoint> grid;
+
 
 	void OnAwake()
 	{
@@ -32,11 +32,7 @@ public class BattleManager : GridBehaviour<FlatHexPoint>
 		validTargets = new  Dictionary<FlatHexPoint, float>(); 
 	}
 
-	override public void InitGrid()
-	{
-		grid = Grid.CastValues<SectorCell, FlatHexPoint> ();
 
-	}
 
 	public void Update()
 	{
@@ -51,13 +47,13 @@ public class BattleManager : GridBehaviour<FlatHexPoint>
 				Vector3 worldPosition = this.transform.InverseTransformPoint (hit.point);
 
 
-				var point = Map [worldPosition]; 
+				var point = Sector.Map[worldPosition]; 
 
-				if (grid.Contains (point))
+				if (Sector.Grid.Contains (point))
 				{
 
-					grid [point].Color = Color.red;
-					CameraController.camController.CentreOn (Map [point]);
+//					Sector.Grid[point].Color = Color.red;
+					CameraController.camController.CentreOn (Sector.Map [point]);
 
 
 
@@ -66,4 +62,37 @@ public class BattleManager : GridBehaviour<FlatHexPoint>
 			}
 		}
 	}
+
+
+	public void CreateUnitAtRandomPoint()
+	{
+		var point = Sector.Grid.SampleRandom<FlatHexPoint> (1);
+
+		foreach(var p in point)
+		{
+			CreateUnit (p, unitPrefab);
+		}
+
+
+	}
+
+private void CreateUnit (FlatHexPoint point, GameObject prefab)
+	{
+		//Create a new unit from the Prefab and Register it on the Grid
+		GameObject newUnit = Instantiate (prefab, Sector.Map [point], Quaternion.identity) as GameObject;
+		Unit unit = newUnit.GetComponent<Unit> ();
+		Sector.Grid [point].unit = unit;
+
+		Sector.Grid [point].contents = Cell.Contents.unit;	
+		Sector.Grid [point].isAccessible = false;
+
+		unit.position = Sector.Grid [point].name;
+
+
+
+		CameraController.camController.CentreOn (Sector.Map [point]);
+
+	}
+
+
 }
